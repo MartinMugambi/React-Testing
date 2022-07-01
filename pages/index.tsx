@@ -1,7 +1,7 @@
 import Button from "../components/button";
 import Header from "../components/header";
-import Input from "../components/header/input";
-import styles from '../styles/Home.module.css';
+import Input from "../components/input";
+import styles from "../styles/Home.module.css"
 const Home = () =>{
 
   return (
