@@ -1,0 +1,25 @@
+
+.container {
+    display: flex;
+    flex-direction: column;
+    column-gap: 10px;
+}
+
+.container > input[type="text"]{
+    width:  350px;
+    height: 20%;
+    padding: 17px;
+    outline: none;
+    margin-top: 15px;
+    border: 1px black solid;
+}
+
+.container > input[type="date"]{
+    width: 350px;
+    height: 20%;
+    padding: 17px;
+    outline: none;
+    margin-top: 15px;
+    border: 1px black solid;
+
+}
