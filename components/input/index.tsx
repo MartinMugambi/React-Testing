@@ -1,4 +1,4 @@
-import styles from "../../../styles/Input.module.css"
+import styles from "../../styles/Input.module.css"
 
 interface InputProps{
     type: string 
