@@ -21,6 +21,9 @@ import Button from '../components/button'
 //styles
 import styles from '../styles/Home.module.css'
 
+//hero icons
+import {PlusCircleIcon} from "@heroicons/react/solid"
+
 export interface TodoStateType {
 	todoTitle: string
 	todoDescription: string
@@ -93,7 +96,12 @@ const Home = (props: HomeComponentProps) => {
 			{showCreateTodoForm ? (
 				<CreateTodo handleChange={handleChange} handleCancel={handleCancel} handleSubmit={handleSubmit} />
 			) : (
-				<Button type='button' title='Create a todo' bgColor='grey' color='black' onClick={handleShowTodoForm} />
+				 // update to make UI design
+				<section onClick={handleShowTodoForm}>
+                 <PlusCircleIcon  width={30}/>
+				  <h1>Create a new todo...</h1>
+				</section>
+				
 			)}
 
 			<h2>The rest of the todos 😊 {/*example illustration*/}</h2>
