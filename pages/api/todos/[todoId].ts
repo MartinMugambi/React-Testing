@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 
 //mongodb
-import { MongoClient, ObjectId, Collection } from 'mongodb'
+import { MongoClient, ObjectId } from 'mongodb'
 
 type ResponseType = {
 	message: string
