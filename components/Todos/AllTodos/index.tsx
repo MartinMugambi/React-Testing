@@ -1,6 +1,9 @@
 //types
 import { TodoType } from '../../../pages'
 
+//nextjs
+import Link from 'next/link'
+
 interface AllTodosProps {
 	todo: TodoType
 }
@@ -10,7 +13,11 @@ const AllTodos = (props: AllTodosProps) => {
 	return (
 		<>
 			{/*just for display*/}
-			<div>{todoTitle}</div>
+			<Link href={'/' + id}>
+				<a>
+					<h2>{todoTitle}</h2>
+				</a>
+			</Link>
 			<div>{todoDescription}</div>
 			<div>{todoDate}</div>
 		</>
