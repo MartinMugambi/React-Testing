@@ -1,0 +1,20 @@
+.singleTodo {
+	display: flex;
+	flex-direction: column;
+	border: 1px solid #d0c8c8;
+	height: 20rem;
+	max-width: 50rem;
+	margin: auto;
+	margin-top: 3rem;
+	padding: 3rem;
+}
+
+.todosActionsBox {
+	display: flex;
+	flex-direction: row;
+}
+
+.todosActionsBox div {
+	margin-top: 1.3rem;
+	margin-left: 20rem;
+}

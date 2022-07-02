@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 
 //nextjs
-import { GetServerSideProps } from 'next'
+import { GetStaticProps } from 'next'
 
 //mongodb
 import { MongoClient } from 'mongodb'
@@ -17,7 +17,6 @@ import { addTodo, fetcher } from '../utils'
 import CreateTodo from '../components/Todos/CreateTodo'
 import AllTodos from '../components/Todos/AllTodos'
 import Button from '../components/button'
-import Header from '../components/header'
 
 //styles
 import styles from '../styles/Home.module.css'
@@ -50,7 +49,7 @@ const Home = (props: HomeComponentProps) => {
 	const { allTodos } = props
 	const { data, error } = useSWR('api/todos/all-todos', fetcher, { fallbackData: allTodos })
 	const { mutate } = useSWRConfig()
-	const [todosData, setTodosData] = useState<TodoType[]>(data)
+	const [todosData, setTodosData] = useState<TodoType[]>(allTodos)
 
 	const [todoState, setTodoState] = useState<TodoStateType>({
 		todoTitle: '',
@@ -76,13 +75,14 @@ const Home = (props: HomeComponentProps) => {
 
 	const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
 		event?.preventDefault()
-		console.log('todos', todoState)
 
 		const response = await addTodo(todoState)
 		const result = await response.json()
 		const mutatedResult: MutatedResponseType = await mutate('api/todos/all-todos')
 
-		setTodosData(mutatedResult.data.map(singleTodo => ({ ...singleTodo, id: singleTodo._id.toString() })))
+		setTodosData(
+			mutatedResult.data && mutatedResult.data.map(singleTodo => ({ ...singleTodo, id: singleTodo._id.toString() })),
+		)
 		console.log('result', result)
 		setTodoState({ todoTitle: '', todoDescription: '', todoDate: '', isDone: false })
 		setShowCreateTodoForm(!showCreateTodoForm)
@@ -90,7 +90,6 @@ const Home = (props: HomeComponentProps) => {
 
 	return (
 		<main className={styles.main}>
-			<Header />
 			{showCreateTodoForm ? (
 				<CreateTodo handleChange={handleChange} handleCancel={handleCancel} handleSubmit={handleSubmit} />
 			) : (
@@ -101,7 +100,7 @@ const Home = (props: HomeComponentProps) => {
 			{todosData?.length === 0 && <div>No todos here</div>}
 			{todosData
 				?.map(todo => todo)
-				.reverse() /*reverse the order of the todos, to be displayed from the latest added to the oldest*/
+				.reverse() /*this reverses the order of the todos displayed ie. from the latest added to the oldest*/
 				.map(todo => (
 					<AllTodos todo={todo} key={todo.id} />
 				))}
@@ -109,7 +108,7 @@ const Home = (props: HomeComponentProps) => {
 	)
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps: GetStaticProps = async () => {
 	const client = await MongoClient.connect(
 		`mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@atlascluster.eaeksnx.mongodb.net/?retryWrites=true&w=majority`,
 	)
@@ -127,6 +126,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
 				todoDate: todo.todoDate,
 			})),
 		},
+		revalidate: 1,
 	}
 }
 
