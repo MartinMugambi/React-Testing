@@ -2,7 +2,7 @@
 import React, { useState } from 'react'
 
 //nextjs
-import { GetServerSideProps, GetStaticProps } from 'next'
+import { GetStaticProps } from 'next'
 
 //mongodb
 import { MongoClient } from 'mongodb'
@@ -17,7 +17,6 @@ import { addTodo, fetcher } from '../utils'
 import CreateTodo from '../components/Todos/CreateTodo'
 import AllTodos from '../components/Todos/AllTodos'
 import Button from '../components/button'
-import Header from '../components/header'
 
 //styles
 import styles from '../styles/Home.module.css'
@@ -91,7 +90,6 @@ const Home = (props: HomeComponentProps) => {
 
 	return (
 		<main className={styles.main}>
-			<Header />
 			{showCreateTodoForm ? (
 				<CreateTodo handleChange={handleChange} handleCancel={handleCancel} handleSubmit={handleSubmit} />
 			) : (
@@ -102,7 +100,7 @@ const Home = (props: HomeComponentProps) => {
 			{todosData?.length === 0 && <div>No todos here</div>}
 			{todosData
 				?.map(todo => todo)
-				.reverse() /*reverse the order of the todos, to be displayed from the latest added to the oldest*/
+				.reverse() /*this reverses the order of the todos displayed ie. from the latest added to the oldest*/
 				.map(todo => (
 					<AllTodos todo={todo} key={todo.id} />
 				))}
