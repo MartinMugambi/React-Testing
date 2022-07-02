@@ -1,0 +1,42 @@
+
+.container {
+    width: 35%;
+    border: 1px solid black;
+    display: flex;
+    flex-direction: column;     
+}
+
+.checkbox{
+    
+    transform: scale(1.5);
+}
+
+.first{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.second{
+    display: flex;
+    gap: 10px;
+}
+
+.third{
+    display: flex;
+    gap: 15px;
+}
+
+.fourth{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.8rem;
+    width: 100%;
+}
+
+.fourth > :first-child{
+    text-align: justify;
+    width: 60%;
+    line-height: 1.5rem;
+}
