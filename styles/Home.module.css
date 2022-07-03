@@ -1,5 +1,22 @@
 .main {
 	text-align: center;
+	width: 100%;
+}
+
+.main > section{
+  display: flex;
+  gap: 10px;
+  width: 400px;
+  border: 1px solid grey;
+  justify-content: center;
+  margin: auto;
+  padding: 0.5rem;
+  margin-top: 15px;
+  cursor: pointer;
+}
+
+.main > section h1 {
+	color: gray;
 }
 
 .form {
