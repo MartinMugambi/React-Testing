@@ -7,7 +7,7 @@ import { ParsedUrlQuery } from 'querystring'
 import { useRouter } from 'next/router'
 
 //utils
-import { deleteTodo } from '../../utils'
+import { markTodoDone, deleteTodo } from '../../utils'
 
 //components
 import SingleTodo from '../../components/Todos/SingleTodo'
@@ -18,7 +18,7 @@ import { TodoType } from '../index'
 interface ContextType extends ParsedUrlQuery {
 	todoId: string
 }
-interface TodoDocument {
+export interface TodoDocument {
 	_id: ObjectId
 	todoTitle: string
 	todoDescription: string
@@ -33,6 +33,15 @@ interface SingleTodoPagePropType {
 const SingleTodoPage = (props: SingleTodoPagePropType) => {
 	const { todoData } = props
 	const router = useRouter()
+
+	const handleTodoDone = async (id: string, checked: boolean) => {
+		console.log('id: ', id, 'is done is now', checked)
+		const response = await markTodoDone(checked, id)
+		const result = await response.json()
+
+		console.log('result after todo done UPDATE req', result)
+	}
+
 	const handleDeleteTodo = async (id: string) => {
 		const response = await deleteTodo(id)
 		const result = await response.json()
@@ -44,7 +53,7 @@ const SingleTodoPage = (props: SingleTodoPagePropType) => {
 
 	return (
 		<>
-			<SingleTodo todo={todoData} handleDeleteTodo={handleDeleteTodo} />
+			<SingleTodo todo={todoData} handleTodoDone={handleTodoDone} handleDeleteTodo={handleDeleteTodo} />
 		</>
 	)
 }
