@@ -14,7 +14,9 @@
 	flex-direction: row;
 }
 
-.todosActionsBox div {
+.todosActionsBox section {
 	margin-top: 1.3rem;
 	margin-left: 20rem;
+	display: flex;
+	gap: 4rem;
 }
