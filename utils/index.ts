@@ -15,3 +15,25 @@ export const addTodo = async (todo: TodoStateType) => {
 
 	return result
 }
+
+export const markTodoDone = async (isDone: boolean, id: string) => {
+	const markTodoDoneEndPoint = `/api/todo/${id}`
+	const result = await fetch(markTodoDoneEndPoint, {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'text/plain',
+		},
+		body: JSON.stringify(isDone),
+	})
+
+	return result
+}
+
+export const deleteTodo = async (id: string) => {
+	const deleteTodoEndPoint = `/api/todos/${id}`
+	const result = await fetch(deleteTodoEndPoint, {
+		method: 'DELETE',
+	})
+
+	return result
+}

@@ -11,18 +11,17 @@ import { MongoClient } from 'mongodb'
 import useSWR, { useSWRConfig } from 'swr'
 
 //utils
-import { addTodo, fetcher } from '../utils'
+import { addTodo, markTodoDone, fetcher, deleteTodo } from '../utils'
 
 //components
 import CreateTodo from '../components/Todos/CreateTodo'
 import AllTodos from '../components/Todos/AllTodos'
-import Button from '../components/button'
 
 //styles
 import styles from '../styles/Home.module.css'
 
 //hero icons
-import {PlusCircleIcon} from "@heroicons/react/solid"
+import { PlusCircleIcon } from '@heroicons/react/solid'
 
 export interface TodoStateType {
 	todoTitle: string
@@ -33,7 +32,7 @@ export interface TodoStateType {
 
 export interface TodoType {
 	_id: any
-	id: string | null
+	id: string
 	todoTitle: string
 	todoDescription: string
 	todoDate: string
@@ -43,7 +42,7 @@ interface HomeComponentProps {
 	allTodos: TodoType[]
 }
 
-interface MutatedResponseType {
+export interface MutatedResponseType {
 	data: TodoType[]
 }
 
@@ -69,6 +68,29 @@ const Home = (props: HomeComponentProps) => {
 		})
 	}
 
+	const handleTodoDone = async (id: string, checked: boolean) => {
+		console.log('id: ', id, 'is done is now', checked)
+		const response = await markTodoDone(checked, id)
+		const result = await response.json()
+
+		const mutatedResult: MutatedResponseType = await mutate('api/todos/all-todos')
+		setTodosData(
+			mutatedResult.data && mutatedResult.data.map(singleTodo => ({ ...singleTodo, id: singleTodo._id.toString() })),
+		)
+		console.log('result after todo done UPDATE req', result)
+	}
+
+	const handleDeleteTodo = async (id: string) => {
+		const response = await deleteTodo(id)
+		const result = await response.json()
+		const mutatedResult: MutatedResponseType = await mutate('api/todos/all-todos')
+
+		setTodosData(
+			mutatedResult.data && mutatedResult.data.map(singleTodo => ({ ...singleTodo, id: singleTodo._id.toString() })),
+		)
+		console.log('result after todo DELETE req', result)
+	}
+
 	const handleShowTodoForm = () => setShowCreateTodoForm(!showCreateTodoForm)
 
 	const handleCancel = (event?: React.FormEvent<HTMLFormElement>) => {
@@ -86,7 +108,7 @@ const Home = (props: HomeComponentProps) => {
 		setTodosData(
 			mutatedResult.data && mutatedResult.data.map(singleTodo => ({ ...singleTodo, id: singleTodo._id.toString() })),
 		)
-		console.log('result', result)
+		console.log('result after CreateTodo req', result)
 		setTodoState({ todoTitle: '', todoDescription: '', todoDate: '', isDone: false })
 		setShowCreateTodoForm(!showCreateTodoForm)
 	}
@@ -96,12 +118,11 @@ const Home = (props: HomeComponentProps) => {
 			{showCreateTodoForm ? (
 				<CreateTodo handleChange={handleChange} handleCancel={handleCancel} handleSubmit={handleSubmit} />
 			) : (
-				 // update to make UI design
+				// update to make UI design
 				<section onClick={handleShowTodoForm}>
-                 <PlusCircleIcon  width={30}/>
-				  <h1>Create a new todo...</h1>
+					<PlusCircleIcon width={30} />
+					<h1>Create a new todo...</h1>
 				</section>
-				
 			)}
 
 			<h2>The rest of the todos 😊 {/*example illustration*/}</h2>
@@ -110,7 +131,7 @@ const Home = (props: HomeComponentProps) => {
 				?.map(todo => todo)
 				.reverse() /*this reverses the order of the todos displayed ie. from the latest added to the oldest*/
 				.map(todo => (
-					<AllTodos todo={todo} key={todo.id} />
+					<AllTodos todo={todo} handleTodoDone={handleTodoDone} handleDeleteTodo={handleDeleteTodo} key={todo.id} />
 				))}
 		</main>
 	)
@@ -132,6 +153,7 @@ export const getStaticProps: GetStaticProps = async () => {
 				todoTitle: todo.todoTitle,
 				todoDescription: todo.todoDescription,
 				todoDate: todo.todoDate,
+				isDone: todo.isDone,
 			})),
 		},
 		revalidate: 1,

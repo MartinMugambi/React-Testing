@@ -1,9 +1,13 @@
 //mongodb
-import { MongoClient, ObjectId, WithId, Document } from 'mongodb'
+import { MongoClient, ObjectId } from 'mongodb'
 
 //nextjs
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { ParsedUrlQuery } from 'querystring'
+import { useRouter } from 'next/router'
+
+//utils
+import { deleteTodo } from '../../utils'
 
 //components
 import SingleTodo from '../../components/Todos/SingleTodo'
@@ -28,9 +32,19 @@ interface SingleTodoPagePropType {
 
 const SingleTodoPage = (props: SingleTodoPagePropType) => {
 	const { todoData } = props
+	const router = useRouter()
+	const handleDeleteTodo = async (id: string) => {
+		const response = await deleteTodo(id)
+		const result = await response.json()
+		if (result.message === 'Successfully deleted the todo') {
+			router.push('/')
+		}
+		console.log('result after todo DELETE req', result)
+	}
+
 	return (
 		<>
-			<SingleTodo todo={todoData} />
+			<SingleTodo todo={todoData} handleDeleteTodo={handleDeleteTodo} />
 		</>
 	)
 }
