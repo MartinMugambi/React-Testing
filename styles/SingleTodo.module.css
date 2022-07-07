@@ -14,9 +14,18 @@
 	flex-direction: row;
 }
 
-.todosActionsBox section {
+.todosActionsBox .iconsContainer {
 	margin-top: 1.3rem;
-	margin-left: 20rem;
+	margin-left: 25rem;
 	display: flex;
-	gap: 4rem;
+	gap: 1.5rem;
+}
+
+.checkbox {
+	transform: scale(1.5);
+}
+
+.todoTitleSection {
+	display: flex;
+	gap: 10px;
 }
