@@ -79,7 +79,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse 
 				)
 				console.log('result after successful update', result)
 				client.close()
-				return res.status(201).json({ message: 'Successfully edited the todo' })
+				return res.status(201).json({ message: 'Successfully updated the todo title' })
 			} catch (error) {
 				console.log('error', error)
 				res.status(500).json({

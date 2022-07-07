@@ -2,6 +2,9 @@
 import Button from '../../button'
 import Input from '../../input'
 
+// //react-hook-form
+// import { UseFormRegister, FieldValues, UseFormHandleSubmit, SubmitHandler } from 'react-hook-form'
+
 //styles
 import styles from '../../../styles/Home.module.css'
 

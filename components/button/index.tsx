@@ -5,7 +5,7 @@ interface ButtonProps {
 	title: string
 	bgColor: string
 	color: string
-	onClick: () => void
+	onClick?: () => void
 	type: 'reset' | 'button' | 'submit'
 }
 

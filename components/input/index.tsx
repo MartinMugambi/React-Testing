@@ -13,6 +13,7 @@ const Input = (props: InputProps) => {
 	return (
 		<section className={styles.container}>
 			<input
+				required
 				type={props.type}
 				placeholder={props.placeholder}
 				name={props.name}

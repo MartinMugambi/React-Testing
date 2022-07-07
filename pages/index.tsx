@@ -10,8 +10,11 @@ import { MongoClient } from 'mongodb'
 //swr
 import useSWR, { useSWRConfig } from 'swr'
 
+//react-hook-form
+// import { useForm, SubmitHandler, FieldValues } from 'react-hook-form'
+
 //utils
-import { addTodo, markTodoDone, fetcher, deleteTodo } from '../utils'
+import { addTodo, markTodoDone, updateTodoTitle, fetcher, deleteTodo } from '../utils'
 
 //components
 import CreateTodo from '../components/Todos/CreateTodo'
@@ -48,6 +51,8 @@ export interface MutatedResponseType {
 
 const Home = (props: HomeComponentProps) => {
 	const [showCreateTodoForm, setShowCreateTodoForm] = useState(false)
+	const [idOnEdit, setIdOnEdit] = useState<string | null>(null)
+	const [isOnEdit, setIsOnEdit] = useState(false)
 	const { allTodos } = props
 	const { data, error } = useSWR('api/todos/all-todos', fetcher, { fallbackData: allTodos })
 	const { mutate } = useSWRConfig()
@@ -80,6 +85,21 @@ const Home = (props: HomeComponentProps) => {
 		console.log('result after todo done UPDATE req', result)
 	}
 
+	const handleUpdateTodoTitle = async (idToEdit: string, updatedTodoTitle?:string) => {
+		console.log('id to update', idToEdit, 'updated todo title', updatedTodoTitle)
+		setIdOnEdit(idToEdit)
+		setIsOnEdit(!isOnEdit)
+
+		const response = await updateTodoTitle(idToEdit, updatedTodoTitle as string)
+		const result = await response.json()
+
+		const mutatedResult: MutatedResponseType = await mutate('api/todos/all-todos')
+		setTodosData(
+			mutatedResult.data && mutatedResult.data.map(singleTodo => ({ ...singleTodo, id: singleTodo._id.toString() })),
+		)
+		console.log('result after todo done UPDATE req', result)
+	}
+
 	const handleDeleteTodo = async (id: string) => {
 		const response = await deleteTodo(id)
 		const result = await response.json()
@@ -100,7 +120,7 @@ const Home = (props: HomeComponentProps) => {
 
 	const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
 		event?.preventDefault()
-
+		console.log('todo state', todoState)
 		const response = await addTodo(todoState)
 		const result = await response.json()
 		const mutatedResult: MutatedResponseType = await mutate('api/todos/all-todos')
@@ -131,7 +151,15 @@ const Home = (props: HomeComponentProps) => {
 				?.map(todo => todo)
 				.reverse() /*this reverses the order of the todos displayed ie. from the latest added to the oldest*/
 				.map(todo => (
-					<AllTodos todo={todo} handleTodoDone={handleTodoDone} handleDeleteTodo={handleDeleteTodo} key={todo.id} />
+					<AllTodos
+						todo={todo}
+						idOnEdit={idOnEdit}
+						isOnEdit={isOnEdit}
+						handleTodoDone={handleTodoDone}
+						handleUpdateTodoTitle={handleUpdateTodoTitle}
+						handleDeleteTodo={handleDeleteTodo}
+						key={todo.id}
+					/>
 				))}
 		</main>
 	)
