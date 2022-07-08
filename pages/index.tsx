@@ -23,6 +23,9 @@ import styles from '../styles/Home.module.css'
 //hero icons
 import { PlusCircleIcon } from '@heroicons/react/solid'
 
+// Global context
+import { useErrors } from './context/appContext'
+
 export interface TodoStateType {
 	todoTitle: string
 	todoDescription: string
@@ -53,6 +56,7 @@ const Home = (props: HomeComponentProps) => {
 	const { mutate } = useSWRConfig()
 	const [todosData, setTodosData] = useState<TodoType[]>(allTodos)
 
+	const { formErrors, setFormErrors, setLoading } = useErrors()
 	const [todoState, setTodoState] = useState<TodoStateType>({
 		todoTitle: '',
 		todoDescription: '',
@@ -91,7 +95,11 @@ const Home = (props: HomeComponentProps) => {
 		console.log('result after todo DELETE req', result)
 	}
 
-	const handleShowTodoForm = () => setShowCreateTodoForm(!showCreateTodoForm)
+	const handleShowTodoForm = () => {
+		setShowCreateTodoForm(!showCreateTodoForm)
+		//set loading to false  once data is submiitted
+		setLoading(false)
+	}
 
 	const handleCancel = (event?: React.FormEvent<HTMLFormElement>) => {
 		event?.preventDefault()
@@ -101,6 +109,56 @@ const Home = (props: HomeComponentProps) => {
 	const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
 		event?.preventDefault()
 
+		//form input fields validation
+		if (!todoState.todoTitle) {
+			return setFormErrors({
+				...formErrors,
+				title: true,
+				description: false,
+				date: false,
+			})
+		} else {
+			setFormErrors({
+				...formErrors,
+				title: false,
+				description: false,
+				date: false,
+			})
+		}
+		if (!todoState.todoDescription) {
+			return setFormErrors({
+				...formErrors,
+				title: false,
+				description: true,
+				date: false,
+			})
+		} else {
+			setFormErrors({
+				...formErrors,
+				title: false,
+				description: false,
+				date: false,
+			})
+		}
+
+		if (!todoState.todoDate) {
+			return setFormErrors({
+				...formErrors,
+				title: false,
+				description: false,
+				date: true,
+			})
+		} else {
+			setFormErrors({
+				...formErrors,
+				title: false,
+				description: false,
+				date: false,
+			})
+			// set  Loading to true when submitted data
+			setLoading(true)
+		}
+		//end of form input field validation
 		const response = await addTodo(todoState)
 		const result = await response.json()
 		const mutatedResult: MutatedResponseType = await mutate('api/todos/all-todos')
