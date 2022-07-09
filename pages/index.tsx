@@ -104,6 +104,13 @@ const Home = (props: HomeComponentProps) => {
 	const handleCancel = (event?: React.FormEvent<HTMLFormElement>) => {
 		event?.preventDefault()
 		setShowCreateTodoForm(!showCreateTodoForm)
+		setTodoState({ todoTitle: '', todoDescription: '', todoDate: '', isDone: false })
+		setFormErrors({
+			...formErrors,
+			title: false,
+			description: false,
+			date: false,
+		})
 	}
 
 	const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
@@ -183,7 +190,7 @@ const Home = (props: HomeComponentProps) => {
 				</section>
 			)}
 
-			<h2>The rest of the todos 😊 {/*example illustration*/}</h2>
+			<h2>Todos List 😊</h2>
 			{todosData?.length === 0 && <div>No todos here</div>}
 			{todosData
 				?.map(todo => todo)

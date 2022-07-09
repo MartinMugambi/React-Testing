@@ -7,16 +7,22 @@ interface ButtonProps {
 	color: string
 	onClick: () => void
 	type: 'reset' | 'button' | 'submit'
+	disabled?: boolean
 }
 
 const Button = (props: ButtonProps) => {
 	const buttonColorStyle = {
 		color: props.color,
-		backgroundColor: props.bgColor,
+		backgroundColor: props.disabled ? '#cccccc' : props.bgColor,
 	}
 	return (
 		<>
-			<button className={styles.button} style={buttonColorStyle} type={props?.type} onClick={props.onClick}>
+			<button
+				className={styles.button}
+				style={buttonColorStyle}
+				type={props?.type}
+				disabled={props.disabled}
+				onClick={props.onClick}>
 				{props.title}
 			</button>
 		</>
