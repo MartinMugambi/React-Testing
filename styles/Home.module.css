@@ -30,6 +30,12 @@
 	min-height: 400px;
 }
 
+.form .errorText {
+	color: red;
+	align-self: flex-start;
+	margin-left: 25px;
+}
+
 .buttons {
 	display: flex;
 	gap: 10px;
