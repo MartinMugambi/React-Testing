@@ -101,7 +101,11 @@ const AllTodos = (props: AllTodosProps) => {
 					)}
 				</section>
 				<section className={styles.third}>
-					<PencilAltIcon width={30} color='blue' onClick={() => handleUpdateTodoTitle(id)} />
+					<PencilAltIcon
+						width={30}
+						color={checked ? '#d3d3d3' : 'blue'}
+						onClick={() => !checked && handleUpdateTodoTitle(id)}
+					/>
 					<TrashIcon width={30} color='red' onClick={() => handleDeleteTodo(id)} />
 				</section>
 			</section>

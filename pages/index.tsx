@@ -93,6 +93,10 @@ const Home = (props: HomeComponentProps) => {
 		console.log('id to update', idToEdit, 'updated todo title', updatedTodoTitle)
 		setIdOnEdit(idToEdit)
 		setIsOnEdit(!isOnEdit)
+		if (!Boolean(updatedTodoTitle)) {
+			console.log('sorry nothing to update here')
+			return
+		}
 
 		const response = await updateTodoTitle(idToEdit, updatedTodoTitle as string)
 		const result = await response.json()
@@ -105,6 +109,8 @@ const Home = (props: HomeComponentProps) => {
 	}
 
 	const handleDeleteTodo = async (id: string) => {
+		const remainingItems = todosData.filter(todoItem => todoItem.id !== id)
+		setTodosData(remainingItems)
 		const response = await deleteTodo(id)
 		const result = await response.json()
 		const mutatedResult: MutatedResponseType = await mutate('api/todos/all-todos')
