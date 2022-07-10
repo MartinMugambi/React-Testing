@@ -209,10 +209,10 @@ const Home = (props: HomeComponentProps) => {
 				<CreateTodo handleChange={handleChange} handleCancel={handleCancel} handleSubmit={handleSubmit} />
 			) : (
 				// update to make UI design
-				<section onClick={handleShowTodoForm}>
+				<article onClick={handleShowTodoForm}>
 					<PlusCircleIcon width={30} />
 					<h1>Create a new todo...</h1>
-				</section>
+				</article>
 			)}
 
 			<h2>Todos List 😊</h2>

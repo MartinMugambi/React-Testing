@@ -44,7 +44,7 @@ const CreateTodo = (props: CreateTodoProps) => {
 				) : (
 					<Button title='Submit' type='submit' bgColor='blue' color='white' onClick={handleSubmit} />
 				)}
-				<Button title='Cancel' type='button' bgColor='grey' color='black' onClick={handleCancel} />
+				<Button title='Cancel' type='button' bgColor='#d5d5d5' color='black' onClick={handleCancel} />
 			</section>
 		</form>
 	)
