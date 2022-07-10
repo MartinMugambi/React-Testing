@@ -10,8 +10,11 @@ import { MongoClient } from 'mongodb'
 //swr
 import useSWR, { useSWRConfig } from 'swr'
 
+//react-hook-form
+// import { useForm, SubmitHandler, FieldValues } from 'react-hook-form'
+
 //utils
-import { addTodo, markTodoDone, fetcher, deleteTodo } from '../utils'
+import { addTodo, markTodoDone, updateTodoTitle, fetcher, deleteTodo } from '../utils'
 
 //components
 import CreateTodo from '../components/Todos/CreateTodo'
@@ -22,6 +25,9 @@ import styles from '../styles/Home.module.css'
 
 //hero icons
 import { PlusCircleIcon } from '@heroicons/react/solid'
+
+// Global context
+import { useErrors } from './context/appContext'
 
 export interface TodoStateType {
 	todoTitle: string
@@ -48,11 +54,14 @@ export interface MutatedResponseType {
 
 const Home = (props: HomeComponentProps) => {
 	const [showCreateTodoForm, setShowCreateTodoForm] = useState(false)
+	const [idOnEdit, setIdOnEdit] = useState<string | null>(null)
+	const [isOnEdit, setIsOnEdit] = useState(false)
 	const { allTodos } = props
 	const { data, error } = useSWR('api/todos/all-todos', fetcher, { fallbackData: allTodos })
 	const { mutate } = useSWRConfig()
 	const [todosData, setTodosData] = useState<TodoType[]>(allTodos)
 
+	const { formErrors, setFormErrors, setLoading } = useErrors()
 	const [todoState, setTodoState] = useState<TodoStateType>({
 		todoTitle: '',
 		todoDescription: '',
@@ -80,7 +89,28 @@ const Home = (props: HomeComponentProps) => {
 		console.log('result after todo done UPDATE req', result)
 	}
 
+	const handleUpdateTodoTitle = async (idToEdit: string, updatedTodoTitle?: string) => {
+		console.log('id to update', idToEdit, 'updated todo title', updatedTodoTitle)
+		setIdOnEdit(idToEdit)
+		setIsOnEdit(!isOnEdit)
+		if (!Boolean(updatedTodoTitle)) {
+			console.log('sorry nothing to update here')
+			return
+		}
+
+		const response = await updateTodoTitle(idToEdit, updatedTodoTitle as string)
+		const result = await response.json()
+
+		const mutatedResult: MutatedResponseType = await mutate('api/todos/all-todos')
+		setTodosData(
+			mutatedResult.data && mutatedResult.data.map(singleTodo => ({ ...singleTodo, id: singleTodo._id.toString() })),
+		)
+		console.log('result after todo done UPDATE req', result)
+	}
+
 	const handleDeleteTodo = async (id: string) => {
+		const remainingItems = todosData.filter(todoItem => todoItem.id !== id)
+		setTodosData(remainingItems)
 		const response = await deleteTodo(id)
 		const result = await response.json()
 		const mutatedResult: MutatedResponseType = await mutate('api/todos/all-todos')
@@ -91,16 +121,76 @@ const Home = (props: HomeComponentProps) => {
 		console.log('result after todo DELETE req', result)
 	}
 
-	const handleShowTodoForm = () => setShowCreateTodoForm(!showCreateTodoForm)
+	const handleShowTodoForm = () => {
+		setShowCreateTodoForm(!showCreateTodoForm)
+		//set loading to false  once data is submiitted
+		setLoading(false)
+	}
 
 	const handleCancel = (event?: React.FormEvent<HTMLFormElement>) => {
 		event?.preventDefault()
 		setShowCreateTodoForm(!showCreateTodoForm)
+		setTodoState({ todoTitle: '', todoDescription: '', todoDate: '', isDone: false })
+		setFormErrors({
+			...formErrors,
+			title: false,
+			description: false,
+			date: false,
+		})
 	}
 
 	const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
 		event?.preventDefault()
+		//form input fields validation
+		if (!todoState.todoTitle) {
+			return setFormErrors({
+				...formErrors,
+				title: true,
+				description: false,
+				date: false,
+			})
+		} else {
+			setFormErrors({
+				...formErrors,
+				title: false,
+				description: false,
+				date: false,
+			})
+		}
+		if (!todoState.todoDescription) {
+			return setFormErrors({
+				...formErrors,
+				title: false,
+				description: true,
+				date: false,
+			})
+		} else {
+			setFormErrors({
+				...formErrors,
+				title: false,
+				description: false,
+				date: false,
+			})
+		}
 
+		if (!todoState.todoDate) {
+			return setFormErrors({
+				...formErrors,
+				title: false,
+				description: false,
+				date: true,
+			})
+		} else {
+			setFormErrors({
+				...formErrors,
+				title: false,
+				description: false,
+				date: false,
+			})
+			// set  Loading to true when submitted data
+			setLoading(true)
+		}
+		//end of form input field validation
 		const response = await addTodo(todoState)
 		const result = await response.json()
 		const mutatedResult: MutatedResponseType = await mutate('api/todos/all-todos')
@@ -125,13 +215,21 @@ const Home = (props: HomeComponentProps) => {
 				</section>
 			)}
 
-			<h2>The rest of the todos 😊 {/*example illustration*/}</h2>
+			<h2>Todos List 😊</h2>
 			{todosData?.length === 0 && <div>No todos here</div>}
 			{todosData
 				?.map(todo => todo)
 				.reverse() /*this reverses the order of the todos displayed ie. from the latest added to the oldest*/
 				.map(todo => (
-					<AllTodos todo={todo} handleTodoDone={handleTodoDone} handleDeleteTodo={handleDeleteTodo} key={todo.id} />
+					<AllTodos
+						todo={todo}
+						idOnEdit={idOnEdit}
+						isOnEdit={isOnEdit}
+						handleTodoDone={handleTodoDone}
+						handleUpdateTodoTitle={handleUpdateTodoTitle}
+						handleDeleteTodo={handleDeleteTodo}
+						key={todo.id}
+					/>
 				))}
 		</main>
 	)

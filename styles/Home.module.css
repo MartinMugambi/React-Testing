@@ -6,7 +6,7 @@
 .main > section {
 	display: flex;
 	gap: 10px;
-	width: 500px;
+	width: 550px;
 	border: 1px solid grey;
 	justify-content: center;
 	margin: auto;
@@ -28,6 +28,12 @@
 	border: 1px solid black;
 	margin-top: 50px;
 	min-height: 400px;
+}
+
+.form .errorText {
+	color: red;
+	align-self: flex-start;
+	margin-left: 25px;
 }
 
 .buttons {
