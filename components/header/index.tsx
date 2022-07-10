@@ -19,7 +19,7 @@ const Header = () => {
 			</section>
 			<section title='☀️ or 🌙'>
 				<span onClick={() => changeTheme(theme.isLight)}>
-					{theme.theme === 'dark' ? <MoonIcon width={30} /> : <SunIcon width={30} />}
+					{theme.theme === 'dark' ? <SunIcon width={30} /> : <MoonIcon width={30} />}
 				</span>
 			</section>
 		</header>
