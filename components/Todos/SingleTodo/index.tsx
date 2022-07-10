@@ -29,7 +29,7 @@ const SingleTodo = (props: SingleTodoComponentType) => {
 	const [checked, setIsChecked] = useState(todo.isDone)
 
 	return (
-		<div className={styles.singleTodo}>
+		<article className={styles.singleTodo}>
 			<div className={styles.todosActionsBox}>
 				<section className={styles.todoTitleSection}>
 					<input
@@ -58,7 +58,7 @@ const SingleTodo = (props: SingleTodoComponentType) => {
 			</div>
 			<div>{todo.todoDescription}</div>
 			<CustomLink href='/' title='Back' color='white' bgColor='blue' />
-		</div>
+		</article>
 	)
 }
 

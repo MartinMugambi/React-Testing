@@ -52,9 +52,9 @@ const SingleTodoPage = (props: SingleTodoPagePropType) => {
 	}
 
 	return (
-		<>
+		<main>
 			<SingleTodo todo={todoData} handleTodoDone={handleTodoDone} handleDeleteTodo={handleDeleteTodo} />
-		</>
+		</main>
 	)
 }
 
