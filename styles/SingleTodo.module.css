@@ -12,11 +12,11 @@
 .todosActionsBox {
 	display: flex;
 	flex-direction: row;
+	justify-content: space-between;
 }
 
 .todosActionsBox .iconsContainer {
-	margin-top: 1.3rem;
-	margin-left: 15rem;
+	margin-left: 6rem;
 	display: flex;
 	gap: 1.5rem;
 }

@@ -34,4 +34,5 @@ body input[type='checkbox'] {
 
 .dark-background main article {
 	border: 1px solid #fff;
+	background-color: #313134;
 }
