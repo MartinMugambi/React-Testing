@@ -21,7 +21,7 @@
 
 <img width="1361" alt="Screenshot 2022-06-26 at 00 43 38" src="https://user-images.githubusercontent.com/51236424/175791418-23c22f33-a512-43d8-88ba-929149097e98.png">
 
-## `<strike>`Done Todo`</strike>`
+## <strike>Done Todo</strike>
 
 <img width="1357" alt="Screenshot 2022-06-26 at 00 44 42" src="https://user-images.githubusercontent.com/51236424/175791449-1e36f9bf-07f0-4a3e-a0d3-232c4f489ede.png">
 
