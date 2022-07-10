@@ -41,7 +41,7 @@ const AllTodos = (props: AllTodosProps) => {
 	}
 
 	return (
-		<section className={styles.container}>
+		<article className={styles.container}>
 			<section className={styles.first}>
 				<section className={styles.second}>
 					{isOnEdit && id === idOnEdit ? (
@@ -114,7 +114,7 @@ const AllTodos = (props: AllTodosProps) => {
 				<div>{todoDescription}</div>
 				<div>{todoDate}</div>
 			</section>
-		</section>
+		</article>
 	)
 }
 

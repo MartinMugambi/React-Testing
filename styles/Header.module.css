@@ -1,20 +1,23 @@
-.header{
-    display: flex;
-    background: #332FD9;
-    color: white;
-    justify-content: space-around;
-    align-items: center;
-    width: 100vw;
-    height: 100px;
-    cursor: pointer;
+.header {
+	display: flex;
+	background: #332fd9;
+	color: white;
+	justify-content: space-around;
+	align-items: center;
+	width: 100vw;
+	height: 100px;
 }
 
-.todo{
-    display: flex;
-    gap: 15px;
-    align-items: center;
+.header svg {
+	cursor: pointer;
+}
+
+.todo {
+	display: flex;
+	gap: 15px;
+	align-items: center;
 }
 
 .todo > h1 {
-    font-size: 2.4rem;
+	font-size: 2.4rem;
 }

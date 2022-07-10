@@ -14,9 +14,34 @@ const AppContext = ({ children }: any) => {
 		description: false,
 		date: false,
 	})
+	const [theme, setTheme] = useState({
+		theme: 'light',
+		isLight: true,
+	})
+
+	const changeTheme = (option: string | null) => {
+		//option is boolean
+		if (option) {
+			document.body.classList.add('dark-background')
+			setTheme({
+				theme: 'dark',
+				isLight: false,
+			})
+		} else {
+			document.body.classList.remove('dark-background')
+			setTheme({
+				theme: 'light',
+				isLight: true,
+			})
+		}
+	}
 
 	const [loading, setLoading] = useState<boolean>(false)
-	return <StateContext.Provider value={{ formErrors, setFormErrors, loading, setLoading }}>{children}</StateContext.Provider>
+	return (
+		<StateContext.Provider value={{ formErrors, setFormErrors, loading, setLoading, changeTheme, theme }}>
+			{children}
+		</StateContext.Provider>
+	)
 }
 
 export const useErrors = () => useContext(StateContext)
