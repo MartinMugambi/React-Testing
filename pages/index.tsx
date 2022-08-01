@@ -11,7 +11,7 @@ import { MongoClient } from 'mongodb'
 import useSWR, { useSWRConfig } from 'swr'
 
 //react-hook-form
-// import { useForm, SubmitHandler, FieldValues } from 'react-hook-form'
+import { useForm } from 'react-hook-form'
 
 //utils
 import { addTodo, markTodoDone, updateTodoTitle, fetcher, deleteTodo } from '../utils'
@@ -25,9 +25,6 @@ import styles from '../styles/Home.module.css'
 
 //hero icons
 import { PlusCircleIcon } from '@heroicons/react/solid'
-
-// Global context
-import { useErrors } from './context/appContext'
 
 export interface TodoStateType {
 	todoTitle: string
@@ -60,22 +57,14 @@ const Home = (props: HomeComponentProps) => {
 	const { data, error } = useSWR('api/todos/all-todos', fetcher, { fallbackData: allTodos })
 	const { mutate } = useSWRConfig()
 	const [todosData, setTodosData] = useState<TodoType[]>(allTodos)
+	const [loading, setLoading] = useState(false)
 
-	const { formErrors, setFormErrors, setLoading } = useErrors()
-	const [todoState, setTodoState] = useState<TodoStateType>({
-		todoTitle: '',
-		todoDescription: '',
-		todoDate: '',
-		isDone: false,
-	})
-
-	const handleChange = (event: React.FormEvent<HTMLInputElement>) => {
-		const { name, value } = event.currentTarget
-		setTodoState({
-			...todoState,
-			[name]: value,
-		})
-	}
+	const {
+		register,
+		handleSubmit,
+		reset,
+		formState: { errors },
+	} = useForm()
 
 	const handleTodoDone = async (id: string, checked: boolean) => {
 		console.log('id: ', id, 'is done is now', checked)
@@ -123,93 +112,43 @@ const Home = (props: HomeComponentProps) => {
 
 	const handleShowTodoForm = () => {
 		setShowCreateTodoForm(!showCreateTodoForm)
-		//set loading to false  once data is submiitted
-		setLoading(false)
 	}
 
-	const handleCancel = (event?: React.FormEvent<HTMLFormElement>) => {
-		event?.preventDefault()
+	const handleCancel = () => {
+		reset()
 		setShowCreateTodoForm(!showCreateTodoForm)
-		setTodoState({ todoTitle: '', todoDescription: '', todoDate: '', isDone: false })
-		setFormErrors({
-			...formErrors,
-			title: false,
-			description: false,
-			date: false,
-		})
 	}
 
-	const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
-		event?.preventDefault()
-		//form input fields validation
-		if (!todoState.todoTitle) {
-			return setFormErrors({
-				...formErrors,
-				title: true,
-				description: false,
-				date: false,
-			})
-		} else {
-			setFormErrors({
-				...formErrors,
-				title: false,
-				description: false,
-				date: false,
-			})
-		}
-		if (!todoState.todoDescription) {
-			return setFormErrors({
-				...formErrors,
-				title: false,
-				description: true,
-				date: false,
-			})
-		} else {
-			setFormErrors({
-				...formErrors,
-				title: false,
-				description: false,
-				date: false,
-			})
-		}
+	const handleFormSubmit = async (data: any) => {
+		const todoData = { ...data, isDone: false }
+		setLoading(true)
 
-		if (!todoState.todoDate) {
-			return setFormErrors({
-				...formErrors,
-				title: false,
-				description: false,
-				date: true,
-			})
-		} else {
-			setFormErrors({
-				...formErrors,
-				title: false,
-				description: false,
-				date: false,
-			})
-			// set  Loading to true when submitted data
-			setLoading(true)
-		}
-		//end of form input field validation
-		const response = await addTodo(todoState)
+		const response = await addTodo(todoData)
 		const result = await response.json()
 		const mutatedResult: MutatedResponseType = await mutate('api/todos/all-todos')
 
 		setTodosData(
 			mutatedResult.data && mutatedResult.data.map(singleTodo => ({ ...singleTodo, id: singleTodo._id.toString() })),
 		)
+		result.message === 'Successfully added the todo' && setLoading(false)
 		console.log('result after CreateTodo req', result)
-		setTodoState({ todoTitle: '', todoDescription: '', todoDate: '', isDone: false })
+		reset()
 		setShowCreateTodoForm(!showCreateTodoForm)
 	}
 
 	return (
 		<main className={styles.main}>
 			{showCreateTodoForm ? (
-				<CreateTodo handleChange={handleChange} handleCancel={handleCancel} handleSubmit={handleSubmit} />
+				<CreateTodo
+					register={register}
+					errors={errors}
+					handleCancel={handleCancel}
+					handleFormSubmit={handleFormSubmit}
+					handleSubmit={handleSubmit}
+					loading={loading}
+				/>
 			) : (
-				// update to make UI design
-				<article onClick={handleShowTodoForm}>
+				<article onClick={handleShowTodoForm} className={styles.CreateTodoElement}>
 					<PlusCircleIcon width={30} />
 					<h1>Create a new todo...</h1>
 				</article>
@@ -219,7 +158,7 @@ const Home = (props: HomeComponentProps) => {
 			{todosData?.length === 0 && <div>No todos here</div>}
 			{todosData
 				?.map(todo => todo)
-				.reverse() /*this reverses the order of the todos displayed ie. from the latest added to the oldest*/
+				.reverse()
 				.map(todo => (
 					<AllTodos
 						todo={todo}
